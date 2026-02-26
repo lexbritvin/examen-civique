@@ -1,8 +1,16 @@
 # Examen Civique — QCM
 
-A progressive web app (PWA) for practising the French citizenship exam (*examen de naturalisation*). 190 multiple-choice questions across 5 sections, drawn from the official test format.
+A progressive web app (PWA) for practising the **Examen civique**, mandatory in France from **1 January 2026** for first applications for:
 
-**Live site:** https://britvin.github.io/examen-civique/
+- **Carte de séjour pluriannuelle (CSP)** — 2–4 year multi-year residence permit (after CST)
+- **Carte de résident (CR)**
+- **Naturalisation**
+
+> The exam is not required for renewal applications or for first *Carte de séjour temporaire (CST)* requests.
+
+There are three exam versions (CSP / CR / Naturalisation) with different difficulty levels. This app covers the full 190-question pool used across all versions.
+
+**Live site:** https://lexbritvin.github.io/examen-civique/
 
 ## Features
 
