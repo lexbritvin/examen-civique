@@ -372,6 +372,54 @@
       transition: background 0.2s;
     }
     #install-btn:hover { background: #001a70; }
+
+    /* ── Dark mode ──────────────────────────────────────────────────────── */
+    @media (prefers-color-scheme: dark) {
+      body { background: #111827; }
+
+      #welcome-screen h1 { color: #7ba7f7; }
+      #welcome-screen .subtitle { color: #9ca3af; }
+
+      .mention-tab.inactive { background: #1f2937; color: #6b7280; border-color: #374151; }
+
+      .info-card { background: #1f2937; box-shadow: none; }
+      .info-card .num { color: #7ba7f7; }
+      .info-card .lbl { color: #9ca3af; }
+
+      .question-card { background: #1f2937; box-shadow: none; }
+      #question-text { color: #f3f4f6; }
+      .section-badge { background: #1e3a5f; color: #93c5fd; }
+
+      .option-btn {
+        background: #1f2937;
+        border-color: #374151;
+        color: #f3f4f6;
+      }
+      .option-btn:hover:not(:disabled) { background: #263547; border-color: #7ba7f7; }
+      .opt-label { color: #7ba7f7; }
+
+      .option-btn.selected { background: #1e3a5f; border-color: #7ba7f7; }
+      .option-btn.selected .opt-label { color: #93c5fd; }
+
+      .option-btn.correct { background: #14532d; border-color: #22c55e; color: #bbf7d0; }
+      .option-btn.correct .opt-label { color: #86efac; }
+      .option-btn.wrong { background: #4c0519; border-color: #f87171; color: #fecaca; }
+      .option-btn.wrong .opt-label { color: #fca5a5; }
+
+      .progress-track { background: #374151; }
+
+      #result-screen h2 { color: #7ba7f7; }
+      .score-big { color: #f3f4f6; }
+      .result-badge.pass { background: #14532d; color: #bbf7d0; }
+      .result-badge.fail { background: #4c0519; color: #fecaca; }
+
+      .section-table th { color: #6b7280; border-bottom-color: #374151; }
+      .section-table td { color: #f3f4f6; border-bottom-color: #1f2937; }
+      .stat-score { color: #7ba7f7; }
+
+      #install-hint { background: #1e3a5f; border-color: #2d4f7c; color: #d1d5db; }
+      #install-hint .hint-title { color: #93c5fd; }
+    }
   </style>
 </head>
 <body>
