@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192">
+  <!-- Tricolor background -->
+  <rect x="0"   y="0" width="64"  height="192" fill="#002395"/>
+  <rect x="64"  y="0" width="64"  height="192" fill="#FFFFFF"/>
+  <rect x="128" y="0" width="64"  height="192" fill="#ED2939"/>
+  <!-- RF text -->
+  <text x="96" y="108" font-family="Georgia,serif" font-size="52" font-weight="bold"
+        text-anchor="middle" fill="#002395" opacity="0.85">RF</text>
+</svg>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#002395">
+  <title>Examen Civique</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+  <style>
+    /* ── Layout ─────────────────────────────────────────────────────────── */
+    body {
+      background: #f0f2f5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+    }
+    main {
+      width: 100%;
+      max-width: 640px;
+    }
+
+    /* ── Screens ────────────────────────────────────────────────────────── */
+    .screen { width: 100%; }
+
+    /* ── Welcome ────────────────────────────────────────────────────────── */
+    #welcome-screen {
+      text-align: center;
+      padding-top: 3rem;
+    }
+    .flag-icon {
+      font-size: 4rem;
+      margin-bottom: 0.5rem;
+    }
+    #welcome-screen h1 {
+      color: #002395;
+      margin-bottom: 0.25rem;
+    }
+    #welcome-screen .subtitle {
+      color: #666;
+      margin-bottom: 1.25rem;
+      font-size: 0.95rem;
+    }
+
+    /* ── Mention selector ───────────────────────────────────────────────── */
+    .mention-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+    .mention-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0.55rem 1rem;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border: 2px solid transparent;
+      cursor: default;
+      line-height: 1.3;
+    }
+    .mention-tab.active {
+      background: #002395;
+      color: white;
+    }
+    .mention-tab.inactive {
+      background: #f0f0f0;
+      color: #aaa;
+      border-color: #e0e0e0;
+    }
+    .mention-tab .soon {
+      font-size: 0.68rem;
+      font-weight: 400;
+      opacity: 0.8;
+      margin-top: 0.1rem;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+      margin: 1.5rem 0 2rem;
+    }
+    .info-card {
+      background: white;
+      border-radius: 12px;
+      padding: 1rem 0.5rem;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+    }
+    .info-card .num {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #002395;
+    }
+    .info-card .lbl {
+      font-size: 0.78rem;
+      color: #666;
+    }
+    .mode-btns {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    #start-btn {
+      background: #002395;
+      color: white;
+      border: none;
+      padding: 0.85rem 2.5rem;
+      font-size: 1.05rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #start-btn:hover { background: #001a70; }
+    #review-btn {
+      background: transparent;
+      color: #002395;
+      border: 2px solid #002395;
+      padding: 0.7rem 2rem;
+      font-size: 0.95rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    #review-btn:hover { background: #002395; color: white; }
+
+    /* ── Progress bar ───────────────────────────────────────────────────── */
+    .progress-wrap {
+      margin-bottom: 1.25rem;
+    }
+    .progress-track {
+      height: 6px;
+      background: #e0e0e0;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 0.35rem;
+    }
+    #progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #002395, #ED2939);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+      width: 0%;
+    }
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.82rem;
+      color: #888;
+    }
+
+    /* ── Question card ──────────────────────────────────────────────────── */
+    .question-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,.08);
+      margin-bottom: 1rem;
+    }
+    .section-badge {
+      display: inline-block;
+      background: #f0f4ff;
+      color: #002395;
+      font-size: 0.75rem;
+      font-weight: 600;
+      padding: 0.2rem 0.7rem;
+      border-radius: 50px;
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.01em;
+    }
+    #question-text {
+      font-size: 1.05rem;
+      font-weight: 600;
+      line-height: 1.45;
+      color: #1a1a2e;
+      margin: 0;
+    }
+    .star { color: #f5a623; font-size: 0.9em; }
+
+    /* ── Options ────────────────────────────────────────────────────────── */
+    #options {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+    .option-btn {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      background: white;
+      border: 2px solid #e0e4f0;
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      font-size: 0.95rem;
+      color: #1a1a2e;
+      cursor: pointer;
+      text-align: left;
+      line-height: 1.4;
+      transition: border-color 0.15s, background 0.15s;
+      width: 100%;
+    }
+    .option-btn:hover:not(:disabled) {
+      border-color: #002395;
+      background: #f5f7ff;
+    }
+    .option-btn:disabled { cursor: default; }
+    .opt-label {
+      font-weight: 700;
+      color: #002395;
+      min-width: 1.4rem;
+      flex-shrink: 0;
+    }
+
+    /* Correct / Wrong states */
+    .option-btn.correct {
+      background: #e8f7ee;
+      border-color: #2ecc71;
+      color: #1a6b3c;
+    }
+    .option-btn.correct .opt-label { color: #1a6b3c; }
+    .option-btn.wrong {
+      background: #fdecea;
+      border-color: #ED2939;
+      color: #8b1a24;
+    }
+    .option-btn.wrong .opt-label { color: #8b1a24; }
+
+    /* ── Next button ────────────────────────────────────────────────────── */
+    #next-btn {
+      background: #1a1a2e;
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      font-size: 0.95rem;
+      border-radius: 50px;
+      cursor: pointer;
+      float: right;
+      margin-bottom: 1rem;
+      transition: background 0.2s;
+    }
+    #next-btn:hover { background: #002395; }
+
+    /* ── Result screen ──────────────────────────────────────────────────── */
+    #result-screen {
+      text-align: center;
+      padding-top: 1.5rem;
+    }
+    #result-screen h2 { color: #002395; margin-bottom: 0.5rem; }
+    .score-big {
+      font-size: 3.5rem;
+      font-weight: 700;
+      color: #1a1a2e;
+      line-height: 1;
+      margin: 0.5rem 0;
+    }
+    .result-badge {
+      display: inline-block;
+      font-size: 1.3rem;
+      font-weight: 700;
+      padding: 0.4rem 1.5rem;
+      border-radius: 50px;
+      margin: 0.5rem 0 1.5rem;
+    }
+    .result-badge.pass { background: #e8f7ee; color: #1a6b3c; }
+    .result-badge.fail { background: #fdecea; color: #8b1a24; }
+
+    .section-table {
+      width: 100%;
+      text-align: left;
+      border-collapse: collapse;
+      margin: 0 0 1.5rem;
+    }
+    .section-table th {
+      font-size: 0.78rem;
+      color: #888;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.4rem 0.5rem;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    .section-table td {
+      padding: 0.6rem 0.5rem;
+      font-size: 0.9rem;
+      border-bottom: 1px solid #f0f0f0;
+      vertical-align: middle;
+    }
+    .stat-score {
+      font-weight: 700;
+      color: #002395;
+      white-space: nowrap;
+      width: 3rem;
+    }
+    .stat-bar-cell { width: 120px; }
+    .stat-bar {
+      height: 8px;
+      background: linear-gradient(90deg, #002395, #ED2939);
+      border-radius: 4px;
+      min-width: 2px;
+      transition: width 0.5s ease;
+    }
+
+    #restart-btn {
+      background: #002395;
+      color: white;
+      border: none;
+      padding: 0.85rem 2.5rem;
+      font-size: 1rem;
+      border-radius: 50px;
+      cursor: pointer;
+      margin-top: 0.5rem;
+      transition: background 0.2s;
+    }
+    #restart-btn:hover { background: #001a70; }
+  </style>
+</head>
+<body>
+<main>
+
+  <!-- ── Welcome Screen ───────────────────────────────────────────────── -->
+  <section id="welcome-screen" class="screen">
+    <div class="flag-icon">🇫🇷</div>
+    <h1>Examen Civique</h1>
+    <p class="subtitle">Choisissez votre mention</p>
+
+    <div class="mention-tabs">
+      <div class="mention-tab active">
+        Carte de séjour pluriannuelle
+      </div>
+      <div class="mention-tab inactive">
+        Carte de résident
+        <span class="soon">bientôt</span>
+      </div>
+      <div class="mention-tab inactive">
+        Naturalisation
+        <span class="soon">bientôt</span>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="num">40</div>
+        <div class="lbl">questions</div>
+      </div>
+      <div class="info-card">
+        <div class="num">32</div>
+        <div class="lbl">pour réussir</div>
+      </div>
+      <div class="info-card">
+        <div class="num">5</div>
+        <div class="lbl">thèmes</div>
+      </div>
+    </div>
+
+    <div class="mode-btns">
+      <button id="start-btn">Commencer le test</button>
+      <button id="review-btn">Réviser toutes les questions (190)</button>
+    </div>
+  </section>
+
+  <!-- ── Quiz Screen ───────────────────────────────────────────────────── -->
+  <section id="quiz-screen" class="screen" hidden>
+    <div class="progress-wrap">
+      <div class="progress-track">
+        <div id="progress-bar"></div>
+      </div>
+      <div class="progress-row">
+        <span id="section-badge" class="section-badge"></span>
+        <span id="progress-text">1 / 40</span>
+      </div>
+    </div>
+
+    <div class="question-card">
+      <p id="question-text"></p>
+    </div>
+
+    <div id="options"></div>
+
+    <button id="next-btn" hidden>Suivant →</button>
+    <div style="clear:both"></div>
+  </section>
+
+  <!-- ── Result Screen ─────────────────────────────────────────────────── -->
+  <section id="result-screen" class="screen" hidden>
+    <h2>Résultat</h2>
+    <div class="score-big" id="score-value">— / 40</div>
+    <div id="result-badge" class="result-badge"></div>
+
+    <table class="section-table">
+      <thead>
+        <tr>
+          <th>Thème</th>
+          <th>Score</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="section-stats"></tbody>
+    </table>
+
+    <button id="restart-btn">Recommencer</button>
+  </section>
+
+</main>
+
+<script src="questions.js"></script>
+<script src="app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js');
+  }
+</script>
+</body>
+</html>

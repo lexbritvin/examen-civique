@@ -1,0 +1,16 @@
+{
+  "name": "Examen Civique",
+  "short_name": "Civique",
+  "description": "Quiz de préparation à l'examen de naturalisation française",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f0f2f5",
+  "theme_color": "#002395",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}
