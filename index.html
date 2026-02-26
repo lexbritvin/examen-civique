@@ -319,6 +319,38 @@
       transition: background 0.2s;
     }
     #restart-btn:hover { background: #001a70; }
+
+    /* ── Install hint ───────────────────────────────────────────────────── */
+    #install-hint {
+      margin-top: 1.5rem;
+      background: #f0f4ff;
+      border: 1px solid #c8d4f8;
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+      font-size: 0.85rem;
+      color: #333;
+      text-align: left;
+      line-height: 1.5;
+    }
+    #install-hint .hint-title {
+      font-weight: 600;
+      color: #002395;
+      margin-bottom: 0.3rem;
+    }
+    #install-btn {
+      display: block;
+      width: 100%;
+      margin-top: 0.6rem;
+      background: #002395;
+      color: white;
+      border: none;
+      padding: 0.65rem 1.2rem;
+      font-size: 0.9rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #install-btn:hover { background: #001a70; }
   </style>
 </head>
 <body>
@@ -362,6 +394,17 @@
     <div class="mode-btns">
       <button id="start-btn">Commencer le test</button>
       <button id="review-btn">Réviser toutes les questions (190)</button>
+    </div>
+
+    <div id="install-hint" hidden>
+      <div class="hint-title">📲 Installer pour utiliser hors connexion</div>
+      <div id="ios-hint" hidden>
+        Sur Safari : appuyer sur <strong>Partager</strong> (&#x2B06;) puis <strong>« Sur l'écran d'accueil »</strong>.
+      </div>
+      <div id="android-hint" hidden>
+        Disponible en tant qu'application — fonctionne hors connexion.
+        <button id="install-btn">Installer l'application</button>
+      </div>
     </div>
   </section>
 
@@ -415,6 +458,40 @@
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js');
   }
+
+  // PWA install hint
+  (function () {
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches
+      || navigator.standalone === true;
+    if (isStandalone) return; // already installed
+
+    const hint = document.getElementById('install-hint');
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+
+    if (isIOS) {
+      hint.hidden = false;
+      document.getElementById('ios-hint').hidden = false;
+      return;
+    }
+
+    // Android / Chrome: wait for beforeinstallprompt
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', function (e) {
+      e.preventDefault();
+      deferredPrompt = e;
+      hint.hidden = false;
+      document.getElementById('android-hint').hidden = false;
+    });
+
+    document.getElementById('install-btn').addEventListener('click', function () {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function () {
+        deferredPrompt = null;
+        hint.hidden = true;
+      });
+    });
+  }());
 </script>
 </body>
 </html>

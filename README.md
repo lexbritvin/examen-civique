@@ -12,7 +12,7 @@ A progressive web app (PWA) for practising the **Examen civique mention Carte de
 - Instant feedback: green on correct, red on wrong with correct answer highlighted
 - Per-section results table with pass/fail indicator (32 / 40 to pass)
 - ★ marks important questions
-- Works offline via Service Worker cache
+- Works offline — install to home screen for offline use (iOS: Share → Add to Home Screen; Android: browser menu → Install app)
 
 ## Run locally
 

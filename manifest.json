@@ -1,6 +1,6 @@
 {
-  "name": "Examen Civique",
-  "short_name": "Civique",
+  "name": "Examen Civique QCM",
+  "short_name": "Examen Civique",
   "description": "Quiz de préparation à l'examen de naturalisation française",
   "start_url": "/",
   "display": "standalone",
