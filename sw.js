@@ -1,11 +1,12 @@
 const CACHE = 'civique-v1';
+const BASE = self.location.pathname.replace(/sw\.js$/, '');
 const ASSETS = [
-  '/',
-  '/index.html',
-  '/questions.js',
-  '/app.js',
-  '/manifest.json',
-  '/icon.svg',
+  BASE,
+  BASE + 'index.html',
+  BASE + 'questions.js',
+  BASE + 'app.js',
+  BASE + 'manifest.json',
+  BASE + 'icon.svg',
 ];
 
 self.addEventListener('install', e => {

@@ -2,7 +2,7 @@
   "name": "Examen Civique QCM",
   "short_name": "Examen Civique",
   "description": "Quiz de préparation à l'examen de naturalisation française",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#f0f2f5",
   "theme_color": "#002395",
