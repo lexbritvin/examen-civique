@@ -218,6 +218,13 @@
       flex-shrink: 0;
     }
 
+    /* Selected (pre-confirm) state */
+    .option-btn.selected {
+      border-color: #002395;
+      background: #eef1ff;
+    }
+    .option-btn.selected .opt-label { color: #002395; }
+
     /* Correct / Wrong states */
     .option-btn.correct {
       background: #e8f7ee;
@@ -233,6 +240,20 @@
     .option-btn.wrong .opt-label { color: #8b1a24; }
 
     /* ── Next button ────────────────────────────────────────────────────── */
+    #confirm-btn {
+      background: #002395;
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      font-size: 0.95rem;
+      border-radius: 50px;
+      cursor: pointer;
+      float: right;
+      margin-bottom: 1rem;
+      transition: background 0.2s;
+    }
+    #confirm-btn:hover { background: #001a70; }
+
     #next-btn {
       background: #1a1a2e;
       color: white;
@@ -426,6 +447,7 @@
 
     <div id="options"></div>
 
+    <button id="confirm-btn" hidden>Confirmer ✓</button>
     <button id="next-btn" hidden>Suivant →</button>
     <div style="clear:both"></div>
   </section>

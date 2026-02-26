@@ -5,6 +5,8 @@ let score = 0;
 let sectionStats = {};
 let answered = false;
 let reviewMode = false;
+let selectedBtn = null;
+let selectedOpt = null;
 
 const SECTIONS = [1, 2, 3, 4, 5];
 const QUESTIONS_PER_SECTION = 8;
@@ -90,8 +92,11 @@ function renderQuestion() {
     optEl.appendChild(btn);
   });
 
-  // Hide next button
+  // Hide action buttons, reset selection
   document.getElementById('next-btn').hidden = true;
+  document.getElementById('confirm-btn').hidden = true;
+  selectedBtn = null;
+  selectedOpt = null;
 }
 
 function escapeHtml(str) {
@@ -100,7 +105,22 @@ function escapeHtml(str) {
 
 function handleAnswer(opt, btn) {
   if (answered) return;
+
+  // Deselect previous
+  if (selectedBtn) selectedBtn.classList.remove('selected');
+
+  // Select new
+  selectedBtn = btn;
+  selectedOpt = opt;
+  btn.classList.add('selected');
+  document.getElementById('confirm-btn').hidden = false;
+}
+
+function confirmAnswer() {
+  if (answered || !selectedOpt) return;
   answered = true;
+
+  document.getElementById('confirm-btn').hidden = true;
 
   const q = quiz[current];
   sectionStats[q.section].total++;
@@ -108,20 +128,19 @@ function handleAnswer(opt, btn) {
   // Disable all buttons
   document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
 
-  if (opt.correct) {
+  selectedBtn.classList.remove('selected');
+
+  if (selectedOpt.correct) {
     score++;
     sectionStats[q.section].correct++;
-    btn.classList.add('correct');
-    // Auto-advance after 800ms
-    setTimeout(advance, 800);
+    selectedBtn.classList.add('correct');
   } else {
-    btn.classList.add('wrong');
-    // Highlight the correct answer
+    selectedBtn.classList.add('wrong');
     document.querySelectorAll('.option-btn').forEach(b => {
       if (b.dataset.correct) b.classList.add('correct');
     });
-    document.getElementById('next-btn').hidden = false;
   }
+  document.getElementById('next-btn').hidden = false;
 }
 
 function advance() {
@@ -133,6 +152,7 @@ function advance() {
   }
 }
 
+document.getElementById('confirm-btn').addEventListener('click', confirmAnswer);
 document.getElementById('next-btn').addEventListener('click', advance);
 
 // ── Results ───────────────────────────────────────────────────────────────────
