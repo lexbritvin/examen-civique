@@ -247,9 +247,22 @@
     .progress-row {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       font-size: 0.82rem;
       color: #888;
     }
+    #stop-btn {
+      background: none;
+      border: none;
+      color: #aaa;
+      font-size: 1.1rem;
+      cursor: pointer;
+      padding: 0.2rem 0.4rem;
+      border-radius: 6px;
+      line-height: 1;
+      transition: color 0.15s;
+    }
+    #stop-btn:hover { color: #555; }
 
     /* ── Question card ──────────────────────────────────────────────────── */
     .question-card {
@@ -539,6 +552,8 @@
       .option-btn.wrong .opt-label { color: #fca5a5; }
 
       .progress-track { background: #374151; }
+      #stop-btn { color: #6b7280; }
+      #stop-btn:hover { color: #d1d5db; }
 
       #result-screen h2 { color: #7ba7f7; }
       .score-big { color: #f3f4f6; }
@@ -652,6 +667,7 @@
       <div class="progress-row">
         <span id="section-badge" class="section-badge"></span>
         <span id="progress-text">1 / 40</span>
+        <button id="stop-btn" aria-label="Arrêter le test">✕ Arrêter</button>
       </div>
     </div>
 

@@ -324,5 +324,12 @@ document.getElementById('restart-btn').addEventListener('click', () => {
   showScreen('welcome-screen');
 });
 
+document.getElementById('stop-btn').addEventListener('click', () => {
+  if (confirm('Arrêter le test en cours ?')) {
+    renderHistory();
+    showScreen('welcome-screen');
+  }
+});
+
 // ── Init ──────────────────────────────────────────────────────────────────────
 renderHistory();
