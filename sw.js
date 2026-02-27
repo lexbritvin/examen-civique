@@ -1,4 +1,4 @@
-const CACHE = 'civique-v1';
+const CACHE = 'civique-v2';
 const BASE = self.location.pathname.replace(/sw\.js$/, '');
 const ASSETS = [
   BASE,

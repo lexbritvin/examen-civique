@@ -4,9 +4,11 @@ let current = 0;
 let score = 0;
 let sectionStats = {};
 let answered = false;
-let reviewMode = false;
 let selectedBtn = null;
 let selectedOpt = null;
+let wrongIds = [];
+let wrongQuestions = [];
+let currentMode = 'test';
 
 const SECTIONS = [1, 2, 3, 4, 5];
 const QUESTIONS_PER_SECTION = 8;
@@ -36,6 +38,31 @@ function selectReview() {
   return [...QUESTIONS].sort((a, b) => a.id - b.id);
 }
 
+function selectImportant() {
+  return shuffle(QUESTIONS.filter(q => q.important));
+}
+
+function selectSection(sectionId) {
+  return shuffle(QUESTIONS.filter(q => q.section === sectionId));
+}
+
+// ── localStorage ─────────────────────────────────────────────────────────────
+const HISTORY_KEY = 'civique-history';
+const MAX_HISTORY = 20;
+
+function loadHistory() {
+  try {
+    return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
+  } catch { return []; }
+}
+
+function saveToHistory(entry) {
+  const history = loadHistory();
+  history.unshift(entry);
+  if (history.length > MAX_HISTORY) history.length = MAX_HISTORY;
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+}
+
 // ── Screen management ────────────────────────────────────────────────────────
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.hidden = true);
@@ -43,9 +70,22 @@ function showScreen(id) {
 }
 
 // ── Welcome screen ───────────────────────────────────────────────────────────
-function startQuiz(isReview = false) {
-  reviewMode = isReview;
-  quiz = isReview ? selectReview() : selectQuiz();
+function startQuiz(mode) {
+  if (mode === undefined) mode = 'test';
+  currentMode = mode;
+
+  // Capture wrong questions before resetting (for retry mode)
+  const retryPool = [...wrongQuestions];
+  wrongIds = [];
+  wrongQuestions = [];
+
+  if (mode === 'test')           quiz = selectQuiz();
+  else if (mode === 'review')    quiz = selectReview();
+  else if (mode === 'important') quiz = selectImportant();
+  else if (mode === 'retry')     quiz = shuffle(retryPool);
+  else if (mode && mode.section) quiz = selectSection(mode.section);
+  else                           quiz = selectQuiz();
+
   total = quiz.length;
   current = 0;
   score = 0;
@@ -135,6 +175,8 @@ function confirmAnswer() {
     sectionStats[q.section].correct++;
     selectedBtn.classList.add('correct');
   } else {
+    wrongIds.push(q.id);
+    wrongQuestions.push(q);
     selectedBtn.classList.add('wrong');
     document.querySelectorAll('.option-btn').forEach(b => {
       if (b.dataset.correct) b.classList.add('correct');
@@ -162,13 +204,17 @@ function showResults() {
   document.getElementById('score-value').textContent = `${score} / ${total}`;
 
   const badge = document.getElementById('result-badge');
-  if (reviewMode) {
+  if (currentMode === 'review') {
     badge.textContent = '📖 Révision terminée';
     badge.className = 'result-badge pass';
-  } else {
+  } else if (currentMode === 'test') {
     const passed = score >= PASS_SCORE;
     badge.textContent = passed ? '✅ ADMIS' : '❌ ÉCHEC';
     badge.className = 'result-badge ' + (passed ? 'pass' : 'fail');
+  } else {
+    const pct = total > 0 ? Math.round(score / total * 100) : 0;
+    badge.textContent = `${pct}%`;
+    badge.className = 'result-badge ' + (pct >= 80 ? 'pass' : 'fail');
   }
 
   const sectionNames = {
@@ -182,21 +228,101 @@ function showResults() {
   const tbody = document.getElementById('section-stats');
   tbody.innerHTML = '';
   SECTIONS.forEach(s => {
-    const { correct, total } = sectionStats[s];
+    const st = sectionStats[s];
+    if (st.total === 0) return;
     const tr = document.createElement('tr');
-    const pct = total > 0 ? Math.round(correct / total * 100) : 0;
+    const pct = Math.round(st.correct / st.total * 100);
     tr.innerHTML = `
       <td>${sectionNames[s]}</td>
-      <td class="stat-score">${correct}/${total}</td>
+      <td class="stat-score">${st.correct}/${st.total}</td>
       <td class="stat-bar-cell"><div class="stat-bar" style="width:${pct}%"></div></td>
     `;
     tbody.appendChild(tr);
   });
+
+  // Retry button
+  const retryBtn = document.getElementById('retry-btn');
+  if (wrongIds.length > 0 && currentMode !== 'review' && currentMode !== 'retry') {
+    retryBtn.textContent = `Répéter les erreurs (${wrongIds.length})`;
+    retryBtn.hidden = false;
+  } else {
+    retryBtn.hidden = true;
+  }
+
+  // Save to history (not for review/retry)
+  if (currentMode !== 'review' && currentMode !== 'retry') {
+    const passed = currentMode === 'test' ? score >= PASS_SCORE : null;
+    const modeStr = typeof currentMode === 'object' && currentMode.section
+      ? `section-${currentMode.section}`
+      : currentMode;
+    saveToHistory({
+      date: new Date().toISOString(),
+      score,
+      total,
+      passed,
+      mode: modeStr,
+      sections: Object.fromEntries(
+        Object.entries(sectionStats).map(([k, v]) => [k, { correct: v.correct, total: v.total }])
+      )
+    });
+  }
 }
 
+// ── History rendering ─────────────────────────────────────────────────────────
+function renderHistory() {
+  const history = loadHistory();
+  const container = document.getElementById('history-list');
+  if (!history.length) {
+    container.hidden = true;
+    return;
+  }
+  container.hidden = false;
+
+  const modeLabel = m => {
+    if (m === 'test') return '';
+    if (m === 'important') return ' ★';
+    if (m && m.startsWith('section-')) return ` S${m.split('-')[1]}`;
+    return '';
+  };
+
+  const items = history.slice(0, 5).map(h => {
+    const d = new Date(h.date);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const icon = h.passed === true ? '✅' : h.passed === false ? '❌' : '📝';
+    return `<div class="history-item">${icon} ${day}/${month}${modeLabel(h.mode)} — ${h.score}/${h.total}</div>`;
+  }).join('');
+  container.innerHTML = '<div class="history-title">Historique</div>' +
+    `<div class="history-items">${items}</div>`;
+}
+
+// ── Section grid toggle ───────────────────────────────────────────────────────
+document.getElementById('section-btn').addEventListener('click', () => {
+  const grid = document.getElementById('section-grid');
+  const btn = document.getElementById('section-btn');
+  grid.hidden = !grid.hidden;
+  btn.textContent = grid.hidden ? 'Par section ▾' : 'Par section ▴';
+});
+
+document.querySelectorAll('.section-choice').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const sectionId = parseInt(btn.dataset.section);
+    document.getElementById('section-grid').hidden = true;
+    document.getElementById('section-btn').textContent = 'Par section ▾';
+    startQuiz({ section: sectionId });
+  });
+});
+
+// ── Event listeners ───────────────────────────────────────────────────────────
+document.getElementById('start-btn').addEventListener('click', () => startQuiz('test'));
+document.getElementById('review-btn').addEventListener('click', () => startQuiz('review'));
+document.getElementById('important-btn').addEventListener('click', () => startQuiz('important'));
+document.getElementById('retry-btn').addEventListener('click', () => startQuiz('retry'));
+
 document.getElementById('restart-btn').addEventListener('click', () => {
+  renderHistory();
   showScreen('welcome-screen');
 });
 
-document.getElementById('start-btn').addEventListener('click', () => startQuiz(false));
-document.getElementById('review-btn').addEventListener('click', () => startQuiz(true));
+// ── Init ──────────────────────────────────────────────────────────────────────
+renderHistory();

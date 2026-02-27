@@ -101,6 +101,8 @@
       font-size: 0.78rem;
       color: #666;
     }
+
+    /* ── Mode buttons ───────────────────────────────────────────────────── */
     .mode-btns {
       display: flex;
       flex-direction: column;
@@ -116,19 +118,113 @@
       border-radius: 50px;
       cursor: pointer;
       transition: background 0.2s;
+      width: 100%;
     }
     #start-btn:hover { background: #001a70; }
-    #review-btn {
+
+    .mode-btns-row {
+      display: flex;
+      gap: 0.5rem;
+      width: 100%;
+    }
+    #important-btn {
+      flex: 1;
       background: transparent;
-      color: #002395;
-      border: 2px solid #002395;
-      padding: 0.7rem 2rem;
-      font-size: 0.95rem;
+      color: #b45309;
+      border: 2px solid #f5a623;
+      padding: 0.65rem 1rem;
+      font-size: 0.9rem;
       border-radius: 50px;
       cursor: pointer;
       transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
     }
-    #review-btn:hover { background: #002395; color: white; }
+    #important-btn:hover { background: #f5a623; color: white; }
+
+    #section-btn {
+      flex: 1;
+      background: transparent;
+      color: #002395;
+      border: 2px solid #002395;
+      padding: 0.65rem 1rem;
+      font-size: 0.9rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    #section-btn:hover { background: #002395; color: white; }
+
+    #review-btn {
+      background: transparent;
+      color: #555;
+      border: 2px solid #ccc;
+      padding: 0.65rem 2rem;
+      font-size: 0.9rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, border-color 0.2s;
+      width: 100%;
+    }
+    #review-btn:hover { background: #f0f0f0; border-color: #999; }
+
+    /* ── Section grid ───────────────────────────────────────────────────── */
+    #section-grid {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      margin-top: -0.25rem;
+    }
+    .section-choice {
+      background: #f8f9ff;
+      border: 1.5px solid #d0d8f0;
+      border-radius: 10px;
+      padding: 0.6rem 1rem;
+      font-size: 0.88rem;
+      color: #1a1a2e;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.15s, border-color 0.15s;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .section-choice:hover { background: #eef1ff; border-color: #002395; }
+    .section-count {
+      font-size: 0.75rem;
+      color: #888;
+      font-weight: 400;
+    }
+
+    /* ── History ────────────────────────────────────────────────────────── */
+    #history-list {
+      margin-top: 1.25rem;
+      width: 100%;
+    }
+    .history-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 0.5rem;
+    }
+    .history-items {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      justify-content: center;
+    }
+    .history-item {
+      background: white;
+      border: 1px solid #e0e4f0;
+      border-radius: 8px;
+      padding: 0.35rem 0.75rem;
+      font-size: 0.82rem;
+      color: #444;
+      white-space: nowrap;
+    }
 
     /* ── Progress bar ───────────────────────────────────────────────────── */
     .progress-wrap {
@@ -239,7 +335,7 @@
     }
     .option-btn.wrong .opt-label { color: #8b1a24; }
 
-    /* ── Next button ────────────────────────────────────────────────────── */
+    /* ── Action buttons ─────────────────────────────────────────────────── */
     #confirm-btn {
       background: #002395;
       color: white;
@@ -328,16 +424,36 @@
       transition: width 0.5s ease;
     }
 
+    /* ── Result action buttons ──────────────────────────────────────────── */
+    .result-btns {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    #retry-btn {
+      background: #f5a623;
+      color: white;
+      border: none;
+      padding: 0.75rem 2rem;
+      font-size: 0.95rem;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: background 0.2s;
+      width: 100%;
+    }
+    #retry-btn:hover { background: #d4891a; }
+
     #restart-btn {
       background: #002395;
       color: white;
       border: none;
-      padding: 0.85rem 2.5rem;
+      padding: 0.75rem 2rem;
       font-size: 1rem;
       border-radius: 50px;
       cursor: pointer;
-      margin-top: 0.5rem;
       transition: background 0.2s;
+      width: 100%;
     }
     #restart-btn:hover { background: #001a70; }
 
@@ -386,6 +502,22 @@
       .info-card .num { color: #7ba7f7; }
       .info-card .lbl { color: #9ca3af; }
 
+      #important-btn { color: #fbbf24; border-color: #f59e0b; }
+      #important-btn:hover { background: #f59e0b; color: #111827; }
+
+      #section-btn { color: #7ba7f7; border-color: #3b82f6; }
+      #section-btn:hover { background: #3b82f6; color: white; }
+
+      #review-btn { color: #9ca3af; border-color: #374151; }
+      #review-btn:hover { background: #1f2937; border-color: #6b7280; }
+
+      .section-choice { background: #1f2937; border-color: #374151; color: #f3f4f6; }
+      .section-choice:hover { background: #263547; border-color: #7ba7f7; }
+      .section-count { color: #6b7280; }
+
+      .history-title { color: #6b7280; }
+      .history-item { background: #1f2937; border-color: #374151; color: #d1d5db; }
+
       .question-card { background: #1f2937; box-shadow: none; }
       #question-text { color: #f3f4f6; }
       .section-badge { background: #1e3a5f; color: #93c5fd; }
@@ -416,6 +548,9 @@
       .section-table th { color: #6b7280; border-bottom-color: #374151; }
       .section-table td { color: #f3f4f6; border-bottom-color: #1f2937; }
       .stat-score { color: #7ba7f7; }
+
+      #retry-btn { background: #b45309; }
+      #retry-btn:hover { background: #92400e; }
 
       #install-hint { background: #1e3a5f; border-color: #2d4f7c; color: #d1d5db; }
       #install-hint .hint-title { color: #93c5fd; }
@@ -461,9 +596,40 @@
     </div>
 
     <div class="mode-btns">
-      <button id="start-btn">Commencer le test</button>
-      <button id="review-btn">Réviser toutes les questions (190)</button>
+      <button id="start-btn">Commencer le test — 40 questions</button>
+
+      <div class="mode-btns-row">
+        <button id="important-btn">★ Questions importantes</button>
+        <button id="section-btn">Par section ▾</button>
+      </div>
+
+      <div id="section-grid" hidden>
+        <button class="section-choice" data-section="1">
+          Principes et valeurs
+          <span class="section-count">37Q</span>
+        </button>
+        <button class="section-choice" data-section="2">
+          Système institutionnel
+          <span class="section-count">46Q</span>
+        </button>
+        <button class="section-choice" data-section="3">
+          Droits et devoirs
+          <span class="section-count">30Q</span>
+        </button>
+        <button class="section-choice" data-section="4">
+          Histoire et géographie
+          <span class="section-count">47Q</span>
+        </button>
+        <button class="section-choice" data-section="5">
+          Vie dans la société
+          <span class="section-count">30Q</span>
+        </button>
+      </div>
+
+      <button id="review-btn">Réviser tout (190)</button>
     </div>
+
+    <div id="history-list" hidden></div>
 
     <div id="install-hint" hidden>
       <div class="hint-title">📲 Installer pour utiliser hors connexion</div>
@@ -517,7 +683,10 @@
       <tbody id="section-stats"></tbody>
     </table>
 
-    <button id="restart-btn">Recommencer</button>
+    <div class="result-btns">
+      <button id="retry-btn" hidden>Répéter les erreurs</button>
+      <button id="restart-btn">Recommencer</button>
+    </div>
   </section>
 
 </main>
